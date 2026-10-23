@@ -18,10 +18,14 @@ jobs:
           unzip -q max-assistant-fixed.zip -d proj
           cd proj
           gradle assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/*.apk ../max-assistant.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: max-assistant.apk
       - name: Publish APK
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp proj/app/build/outputs/apk/debug/*.apk max-assistant.apk
           gh release delete latest --yes --cleanup-tag || true
           gh release create latest max-assistant.apk --title "Max Assistant APK" --notes "Latest debug build"
